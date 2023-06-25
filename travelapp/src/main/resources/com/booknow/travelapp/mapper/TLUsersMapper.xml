@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.booknow.travelapp.mapper.TLUsersMapper">
+
+  <resultMap id="tlAuthorityMap" type="com.booknow.travelapp.domain.TLAuthoritys">
+    <result property="userId" column="USERID"/>
+    <result property="authority" column="AUTHORITY"/>
+    <result property="grantedDate" column="GRANTEDDATE"/>
+  </resultMap>
+  
+  <resultMap id="tlMemberMap" type="com.booknow.travelapp.domain.TLUsers">
+    <result property="userId" column="USERID"/>
+    <result property="userPassword" column="USERPASSWORD"/>
+    <result property="userName" column="USERNAME"/>
+    <result property="userEmail" column="USEREMAIL"/>
+    <result property="userAddress" column="USERADDRESS"/>
+    <result property="userMileage" column="USERMILEAGE"/>
+    <result property="userBday" column="USERBDAY"/>
+    <result property="userPhoneNumber" column="USERPHONENUMBER"/>
+    <result property="userRegDate" column="USERREGDATE"/>
+    <result property="userModDate" column="USERMODDATE"/>
+    <result property="userStorage" column="USERSTORAGE"/>
+    <result property="enabled" column="ENABLED"/>
+    <collection property="authorityList" resultMap="tlAuthorityMap"/>
+  </resultMap>
+
+  <select id="selectTLUser" resultMap="tlMemberMap">
+	SELECT U.USERID, U.USERNAME, U.USERPASSWORD, U.USEREMAIL, U.USERADDRESS, U.USERMILEAGE, 
+	U.USERBDAY, U.USERPHONENUMBER, U.USERREGDATE, U.USERMODDATE, U.USERSTORAGE, U.ENABLED,
+	A.AUTHORITY, A.GRANTEDDATE
+	FROM tlbook.TBL_USERS U
+	INNER JOIN tlbook.TBL_USER_AUTHORITYS A
+	ON U.USERID = A.USERID
+	WHERE U.USERID = #{userId}
+  </select>
+  
+  <select id="selectTLUserOUTER" resultMap="tlMemberMap">
+	SELECT U.USERID, U.USERNAME, U.USERPASSWORD, U.USEREMAIL, U.USERADDRESS, U.USERMILEAGE, 
+	U.USERBDAY, U.USERPHONENUMBER, U.USERREGDATE, U.USERMODDATE, U.USERSTORAGE, U.ENABLED,
+	A.AUTHORITY, A.GRANTEDDATE
+	FROM tlbook.TBL_USERS U
+	LEFT OUTER JOIN tlbook.TBL_USER_AUTHORITYS A
+	ON U.USERID = A.USERID
+	WHERE U.USERID = #{userId}
+  </select>
+
+  <insert id="insertTLUser">
+	INSERT INTO tlbook.TBL_USERS
+	VALUES(#{userId}, #{userName}, #{userPassword}, #{userEmail}, #{userAddress}, #{userMileage}, 
+	#{userBday}, #{userPhoneNumber}, DEFAULT, DEFAULT, DEFAULT, DEFAULT)
+  </insert>
+
+  <insert id="insertTLAuthoritys">
+	INSERT INTO tlbook.TBL_USER_AUTHORITYS
+	VALUES(#{userId}, #{authority}, DEFAULT)
+  </insert>
+
+
+</mapper>
